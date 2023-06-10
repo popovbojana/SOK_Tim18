@@ -19,12 +19,12 @@ Instalacija projekta:
 ime_okruzenja\Scripts\activate)
 3. Uraditi pip install wheel, django, jinja2
 (Svi plugini se instaliraju pozicioniranjem u glavni folder komponente i komandom python setup.py install):
-4. Instalirati prvo data_core plugin
+4. Instalirati prvo core plugin
 5. Instalirati xml_parser, json_parser, visualisation_simple i visualisation_complex plugine
 3. Pozicionirati se u django_project folder terminalom
 4. Pokrenuti redom komande:
-               python manage.py makemigrations data_core_app
-               python manage.py migrate
+               python manage.py makemigrations data_core_app,
+               python manage.py migrate,
                python manage.py runserver
 
 
