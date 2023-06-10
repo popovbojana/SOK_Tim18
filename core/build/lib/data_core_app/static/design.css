@@ -1,0 +1,70 @@
+body {
+  font-family: segoe ui, serif;
+}
+
+#sidebar{
+  background: #CCCCFF;
+  width: 20%;
+  height: 100%;
+  font-size: 18px;
+  font-weight: bold;
+  border-right: 1px solid #696969;
+}
+
+#sidebar ul li {
+  padding: 8px 10px;
+  width: 100%;
+  text-align: center;
+}
+
+#sidebar button {
+  font-weight: bold;
+  font-size: 17px;
+  background:#696969;
+  border: 1px solid black;
+
+}
+#sidebar input{
+  font-size: 18px;
+  border: 1px solid black;
+
+}
+
+#sidebar p {
+  font-size: 25px ;
+  text-align: center;
+}
+#sidebar h1 {
+  padding: 10px;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-size: 18px;
+}
+
+.Main {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+}
+
+.birdview {
+  position: absolute;
+  left: 21%;
+  bottom: 0;
+}
+
+.treeview {
+  position: absolute;
+  top:0;
+  left:21%;
+}
+
+.treeview li{
+   color: #aa98a9;
+   font-size: 16px;
+   font-weight: bold;
+}

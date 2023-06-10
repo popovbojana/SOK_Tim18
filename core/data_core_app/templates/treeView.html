@@ -1,0 +1,160 @@
+{% extends "index.html" %}
+    {% block treeview %}
+<style>
+    .nested {
+        display: none;
+    }
+    .open {
+  display: block;
+    }
+    li.plusSign {
+        list-style-type: "\002B";
+    }
+    li.minusSign {
+        list-style-type: "\2212";
+    }
+
+    .focusElement{
+        color: #430780;
+        font-weight: bold;
+    }
+    .item {
+  cursor: pointer;
+}
+</style>
+<script>
+    window.onload = function(){
+        tree_view()
+        var spanElement = document.getElementsByClassName("item");
+        for (let i = 0; i < spanElement.length; i++) {
+            spanElement[i].addEventListener("click", function() {
+                this.parentElement.querySelector(".nested").classList.toggle("open");
+  });
+}
+    }
+    document.getElementById("mainView").addEventListener("dblclick", selection);
+
+    function tree_view(){
+        addIsolatedNodes();
+        addRoots();
+
+    }
+
+    function addRoots() {
+        let listItem;
+        let spanItem;
+        let unorderedList;
+        {% for node in roots %}
+            listItem = document.createElement("li");
+            listItem.setAttribute("class", "plusSign");
+            spanItem = document.createElement("span");
+            spanItem.innerText = '{{ node.value }} ';
+            spanItem.setAttribute("class", "item");
+            spanItem.setAttribute("name", "span{{ node.pk }}")
+
+            listItem.append(spanItem);
+
+            unorderedList = document.createElement("ul");
+            unorderedList.setAttribute("class", "nested");
+            unorderedList.setAttribute("name", 'ul{{ node.pk }}');
+            listItem.append(unorderedList);
+            document.getElementById("divTree").append(listItem);
+            add_children({{ node.pk }});
+        {% endfor %}
+    }
+
+    function addIsolatedNodes() {
+        let listItem;
+        let spanItem;
+        let unorderedList;
+        {% for node in isolated_nodes %}
+            listItem = document.createElement("li");
+            listItem.setAttribute("class", "plusSign");
+            spanItem = document.createElement("span");
+            spanItem.innerText = '{{ node.value }}';
+            spanItem.setAttribute("class", "item");
+            spanItem.setAttribute("name", "span{{ node.id }}")
+            listItem.append(spanItem);
+
+            unorderedList = document.createElement("ul");
+            unorderedList.setAttribute("class", "nested");
+            unorderedList.setAttribute("name", 'ul{{ node.pk }}');
+            listItem.append(unorderedList);
+
+            document.getElementById("divTree").append(listItem);
+            addAtributes({{ node.pk }})
+        {% endfor %}
+    }
+
+    function add_children(node){
+        let li;
+        let span;
+        addAtributes(node);
+        {% for key,value in node_children.items %}
+            if ({{ key }} == node){
+                    let ul;
+                    {% for nodeChild in value %}
+                        li = document.createElement("li");
+                        li.setAttribute("class", "plusSign");
+                        span = document.createElement("span");
+                        span.setAttribute("name", "span{{ nodeChild.pk }}");
+                        span.innerText = '{{ nodeChild.value }}';
+                        span.setAttribute("class", "item");
+                        li.append(span);
+
+                        ul = document.createElement("ul");
+                        ul.setAttribute("name", "ul"+{{ nodeChild.pk }})
+                        li.append(ul);
+                        document.getElementsByName('ul'+node)[0].setAttribute("class", "nested");
+                        document.getElementsByName('ul'+node)[0].append(li);
+                        add_children({{ nodeChild.pk }});
+                    {% endfor %}
+        }
+        {% endfor %}
+    }
+
+    function addAtributes(node) {
+        let li;
+        let span;
+        {% for key,value in attribute_children.items %}
+            if ({{ key }} == node){
+                    {% for attributeChild in value %}
+                        li = document.createElement("li");
+                        li.setAttribute("class", "minusSign");
+                        span = document.createElement("span");
+                        span.setAttribute("name", "span{{ attributeChild.pk }}");
+                        span.innerText = '{{ attributeChild.name }} : {{ attributeChild.value }}';
+                        span.setAttribute("class", "item");
+                        li.append(span);
+                        document.getElementsByName('ul'+node)[0].setAttribute("class", "nested");
+                        document.getElementsByName('ul'+node)[0].append(li);
+                    {% endfor %}
+        }
+        {% endfor %}
+    }
+
+    function selection(){
+
+        var focusedElements = document.getElementsByClassName("focusElement");
+        while (focusedElements.length)
+            focusedElements[0].classList.remove("focusElement");
+        var elementForFocus = document.getElementsByClassName("focus")[0];
+        let spanElementForFocus = document.getElementsByName("span"+elementForFocus.id.split("_")[1]);
+        for(let i = 0; i < spanElementForFocus.length; i++){
+            spanElementForFocus[i].classList.add("focusElement");
+        }
+        let el = document.getElementsByName("ul"+elementForFocus.id.split("_")[1]);
+        for(let i=0; i < el.length; i++)
+            openPreviousElements(el[i]);
+
+    }
+    function openPreviousElements(el){
+        var node = el;
+        while(node.nodeName.toLocaleLowerCase() === "li" ||  node.nodeName.toLocaleLowerCase() === "ul"){
+            node.parentElement.parentElement.classList.add("open");
+            node = node.parentElement.parentElement;
+        }
+    }
+
+</script>
+    {% endblock %}
