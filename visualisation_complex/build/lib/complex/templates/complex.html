@@ -1,0 +1,135 @@
+{% block head_sadrzaj %}
+
+<style>
+
+.node {
+  cursor: pointer;
+  color: #3182bd;
+}
+
+.link {
+  stroke: #D3D3D3;
+  stroke-width: 1.5px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <svg width="900" height="700"></svg>
+
+<script>
+    var nodes={
+    {% for node in nodesList %}
+       "cvor_{{node.id}}":{name:"cvor_{{node.id}}",val:"{{node.value}}",
+        attributes:[
+        {% for attribute in attributesList %}
+            {% if attribute.node == node %}
+                { name: "atribut_{{attribute.id}}",naziv:"{{attribute.name}}", val:"{{attribute.value}}"},
+            {% endif %}
+        {% endfor %}
+    ]},
+    {% endfor %}
+    };
+
+    var links=[
+    {% for edge in edgesList %}
+        {source:"cvor_{{edge.originNode.id}}",target:"cvor_{{edge.targetNode.id}}"},
+    {% endfor %}
+    ];
+
+    links.forEach(function(link) {
+        link.source = nodes[link.source];
+        link.target = nodes[link.target];
+    });
+
+
+    var force = d3.layout.force()
+        .size([850, 650])
+        .nodes(d3.values(nodes))
+        .links(links)
+        .on("tick", tick) //sta se desava kada su izracunate nove pozicija elemenata
+        .linkDistance(150) //razmak izmedju elemenata
+        .charge(-6000)//koliko da se elementi odbijaju
+        .start();
+
+    var svg = d3.select("svg")
+        .call(d3.behavior.zoom().on("zoom", function () {
+            svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+          }))
+        .append("g");
+
+    var link = svg.selectAll('.link')
+        .data(links)
+        .enter().append('line')
+        .attr('class', 'link')
+
+    var node = svg.selectAll('.node')
+        .data(force.nodes())
+        .enter().append('g')
+        .on("click", clicked)
+        .attr('class', 'node')
+        .attr('id', function(d) {return d.name;});
+
+    //saljem jedan po jedan g tag
+    d3.selectAll('.node').each(function(d){complexView(d);});
+
+
+    function clicked(d){
+        d3.event.preventDefault();
+        svg.selectAll(".node").classed("focus",  function(i) { return i === d; });
+    }
+
+
+    function complexView(d) {
+        var textSize = 10;
+        var height;
+        var length = getMaxAttributesLength(d)*(textSize/2);
+        if (d.attributes.length !== 0)
+            height = textSize*(d.attributes.length) + textSize*2;
+
+      //Ubacivanje kvadrata
+      d3.select("g#"+d.name).append('rect').
+      attr('x',0).attr('y',0).attr('width',length).attr('height',height).attr('fill','#dedded');
+
+        d3.select("g#"+d.name).append('text').attr('x',length/2).attr('y',10).attr('text-anchor','middle')
+      .attr('font-size',textSize).attr('font-weight', 'bold')
+      .attr('fill','#000004').text(d.val);
+
+      //Ubacivanje razdelnika
+      d3.select("g#"+d.name).append('line').
+      attr('x1',0).attr('y1',textSize+2).attr('x2',length).attr('y2',textSize+2)
+      .attr('stroke','white').attr('stroke-width',2);
+
+      //Ubacivanje teksta za atribute
+        for(var i=0; i<d.attributes.length; i++)
+        {
+            d3.select("g#"+d.name).append('text').attr('x',0).attr('y',25+i*textSize)
+          .attr('text-anchor','start')
+          .attr('font-size',textSize)
+          .attr('fill','#02020e').text(d.attributes[i].naziv+": "+d.attributes[i].val);
+
+        }
+    }
+
+    function tick(e) {
+        node.attr("transform", function(d) {return "translate(" + d.x + "," + d.y + ")";})
+            .call(force.drag);
+        link.attr('x1', function(d) { return d.source.x; })
+            .attr('y1', function(d) { return d.source.y; })
+            .attr('x2', function(d) { return d.target.x; })
+            .attr('y2', function(d) { return d.target.y; });
+    }
+
+    function getMaxAttributesLength(d) {
+        var maxLength = 0;
+        for (let i = 0; i < d.attributes.length; i++) {
+            temp = (d.attributes[i].naziv + ": " + d.attributes[i].val).length;
+            if (temp > maxLength) {
+                maxLength = temp;
+            }
+        }
+        return maxLength;
+    }
+</script>
+{% endblock %}
