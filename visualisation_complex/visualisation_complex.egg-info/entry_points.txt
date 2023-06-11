@@ -1,2 +1,0 @@
-[visualisation]
-load_xml = complex.visualisation_complex:VisualisationComplex
