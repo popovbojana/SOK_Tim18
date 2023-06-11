@@ -1,0 +1,9 @@
+setup.py
+loading/__init__.py
+loading/loadData.py
+source_xml.egg-info/PKG-INFO
+source_xml.egg-info/SOURCES.txt
+source_xml.egg-info/dependency_links.txt
+source_xml.egg-info/entry_points.txt
+source_xml.egg-info/top_level.txt
+source_xml.egg-info/zip-safe

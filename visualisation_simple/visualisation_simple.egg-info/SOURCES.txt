@@ -1,0 +1,10 @@
+setup.py
+simpleVisual/__init__.py
+simpleVisual/simpleVisual.py
+simpleVisual/templates/simpleVisual.html
+visualisation_simple.egg-info/PKG-INFO
+visualisation_simple.egg-info/SOURCES.txt
+visualisation_simple.egg-info/dependency_links.txt
+visualisation_simple.egg-info/entry_points.txt
+visualisation_simple.egg-info/not-zip-safe
+visualisation_simple.egg-info/top_level.txt

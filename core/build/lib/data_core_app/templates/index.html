@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'design.css' %}"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Expressiveness</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<body>
+
+{% for message in messages %}
+<div class="container-fluid p-0">
+  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="True">&times;</span>
+    </button>
+    {{ message }}
+  </div>
+</div>
+{% endfor %}
+
+
+{% block content %}
+        <div class = "wrapper">
+            <nav id = "sidebar">
+                <h1>Expressiveness</h1>
+                <form method="post" action="{% url 'view' %}">
+                    {% csrf_token %}
+                    <ul class="list-unstyled components">
+                        <li class="active">
+                            <p id = "vizuelizatorTitle">Vizualizator</p>
+                            <input type="radio" id="adv" name="visualisation" value="SimpleVisualisation">
+                            <label for="adv">Osnovni</label><br>
+                            <input type="radio" id="bsc" name="visualisation" value="VisualisationComplex">
+                            <label for="bsc">Slozeni</label><br>
+                        </li>
+                        <li>
+                            <p id = "ucitavanjeTitle">Ucitavanje</p>
+                            <input type="radio" id="xml" name="loader" value="xml">
+                            <label for="xml">XML</label><br>
+                            <input type="radio" id="json" name="loader" value="json">
+                            <label for="json">JSON</label><br>
+                            <input type="text" class="inputPath form-control form-control-sm" placeholder="Path to file" name="path">
+                            <button type="submit" class="btn btn-secondary btn-sm btn-block" value="View">View graph</button>
+                        </li>
+                    </ul>
+
+                </form>
+                 <form method="post" action="{% url 'search' %}">
+                     {% csrf_token %}
+                     <ul class="list-unstyled components">
+                         <li>
+                             <p id = "searchTitle">Search</p>
+                             <input type="text" class="inputSearch form-control form-control-sm" placeholder="Type search query" name="search">
+                             <button type="submit"class="btn btn-secondary btn-sm btn-block" value="SearchButton">Search</button>
+
+                         </li>
+                     </ul>
+                 </form>
+                    <form method="post" action="{% url 'filter' %}">
+                     {% csrf_token %}
+                     <ul class="list-unstyled components">
+                         <li>
+                             <p id = "filterTitle">Filter</p>
+                             <input type="text" class="inputFilter form-control form-control-sm" placeholder="Attribute operator value" name="filter">
+                             <button type="submit" class="btn btn-secondary btn-sm btn-block" value="FilterButton">Filter</button>
+                         </li>
+                     </ul>
+                 </form>
+
+            </nav>
+            <div id="mainView" class = Main>
+                {% block mainView %}
+                {% autoescape off %}{{ template }}{% endautoescape %}
+                {% endblock %}
+            </div>
+            <div id="divBird" class = birdview>
+                {% block birdview %}
+                    {% include "birdview.html" %}
+                {% endblock %}
+            </div>
+            <div id="divTree" class="treeview">
+                {% block treeview %}
+                {% endblock %}
+            </div>
+        </div>
+
+{% endblock %}
+</body>
+</html>

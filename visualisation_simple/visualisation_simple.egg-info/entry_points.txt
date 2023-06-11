@@ -1,0 +1,2 @@
+[visualisation]
+load_json = simpleVisual.simpleVisual:SimpleVisualisation
